@@ -1,7 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'flood/capybara/version'
+require 'flood-capybara/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "flood-capybara"
@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "parser"
   spec.add_dependency "unparser"
   spec.add_dependency "rest-client"
+  spec.add_dependency "thor"
 end

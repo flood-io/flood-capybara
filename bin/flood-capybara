@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'flood-capybara'
+
+Flood::Capybara::Cli::Application.start(ARGV)
+

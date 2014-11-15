@@ -1,9 +1,10 @@
-require 'flood/capybara/version'
-
-module Flood
+class Flood
   module Capybara
-    def run
+    def initialize
       @steps = ""
+    end
+
+    def run
       specs = JSON.parse(`bundle exec rspec --dry-run -fj spec`)
       specs = specs['examples'].collect {|spec| spec['file_path']}
 
