@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "elasticsearch"
   spec.add_development_dependency "elasticsearch-api"
   spec.add_development_dependency "selenium-webdriver"
+  spec.add_development_dependency "pry"
 
   spec.add_dependency "parser"
   spec.add_dependency "unparser"

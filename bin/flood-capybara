@@ -2,5 +2,5 @@
 
 require 'flood-capybara'
 
-Flood::Capybara::Cli::Application.start(ARGV)
+FloodCapybara::Cli::Application.start(ARGV)
 

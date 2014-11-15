@@ -8,3 +8,5 @@ require 'thor'
 
 require 'flood-capybara/version'
 require 'flood-capybara/application'
+require 'flood-capybara/logger'
+require 'cli/application'
