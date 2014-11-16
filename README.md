@@ -1,5 +1,7 @@
 # Flood::Capybara
 
+![](http://i.imgur.com/4nAHS.gif)
+
 TODO: Write a gem description
 
 ## Installation
