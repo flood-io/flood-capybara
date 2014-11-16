@@ -1,19 +1,31 @@
+require 'rspec'
+require 'rspec/core/formatters/json_formatter'
+
 class FloodCapybara
   def initialize
     @steps = []
   end
 
   def run(params = {})
-    specs = JSON.parse(`bundle exec rspec --dry-run -fj spec`)
+    logger.info "Minimizing maximums ..."
+    config = RSpec.configuration
+    formatter = RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
+    reporter =  RSpec::Core::Reporter.new(config)
+    config.instance_variable_set(:@reporter, reporter)
+    loader = config.send(:formatter_loader)
+    notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
+    reporter.register_listener(formatter, *notifications)
+    RSpec::Core::Runner.run(['spec', '--dry-run'])
+    specs =  formatter.output_hash
+    puts
     logger.warn "Found the following specs:\n" +
-      specs['examples'].collect {|spec| spec['description']}.join("\n")
-    specs = specs['examples'].collect {|spec| spec['file_path']}
+      specs[:examples].collect {|spec| spec[:description]}.join("\n")
+    specs = specs[:examples].collect {|spec| spec[:file_path]}
 
     specs && specs.uniq.each do |spec|
       ast = Parser::CurrentRuby.parse(File.read(spec))
       iterate ast
     end
-
     flood params
   end
 
