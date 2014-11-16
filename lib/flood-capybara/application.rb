@@ -23,6 +23,7 @@ class FloodCapybara
     node.children.each_with_index do |child, index|
       begin
         if child.to_a.first.children[1] == :it
+          puts child.to_a.first.children
           @steps += Unparser.unparse(child)
         end
       rescue
