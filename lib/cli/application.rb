@@ -6,7 +6,7 @@ class FloodCapybara
 
       desc 'spec', 'run specs on Flood IO'
       option :api_token
-      option :grid_id
+      option :grid
       option :rampup
       option :duration
       option :name

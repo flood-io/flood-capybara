@@ -26,11 +26,11 @@ Or install it yourself as:
 
 In your app / rails directory:
 
-    $ flood-capybara spec --api_token=$FLOOD_API_TOKEN --grid_id=1QNtoBftrokSErYJdTHRQg --duration=120 --url=https://flood.io
+    $ flood-capybara spec --api_token=$FLOOD_API_TOKEN --grid=1QNtoBftrokSErYJdTHRQg --duration=120 --url=https://flood.io
 
 Options available:
 
-- `grid_id` the Flood IO grid id you want to run this test on.
+- `grid` the Flood IO grid id you want to run this test on.
 - `rampup` the rampup time for each capybara instance, note we use a maximum of 8 instances per grid node.
 - `duration` how long you want the specs to iterate for. At the moment it will iterate over specs.
 - `url` the URL which `Capybara.app_host` will get set to. This is so you can test real / integrated environments.
