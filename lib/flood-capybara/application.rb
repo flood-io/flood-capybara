@@ -1,10 +1,12 @@
 class FloodCapybara
   def initialize
-    @steps = ""
+    @steps = []
   end
 
   def run(params = {})
     specs = JSON.parse(`bundle exec rspec --dry-run -fj spec`)
+    puts "Found the following specs:\n" +
+      specs['examples'].collect {|spec| spec['description']}.join("\n")
     specs = specs['examples'].collect {|spec| spec['file_path']}
 
     specs && specs.uniq.each do |spec|
@@ -23,8 +25,7 @@ class FloodCapybara
     node.children.each_with_index do |child, index|
       begin
         if child.to_a.first.children[1] == :it
-          puts child.to_a.first.children
-          @steps += Unparser.unparse(child)
+          @steps << Unparser.unparse(child)
         end
       rescue
       end
@@ -36,7 +37,7 @@ class FloodCapybara
     RestClient.proxy = params[:proxy] if params[:proxy]
     begin
       file = Tempfile.new(['capybara_rspec', '.rb'])
-      file.write(@steps)
+      file.write(@steps.join("\n"))
       file.rewind
 
       flood_files = {
