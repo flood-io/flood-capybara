@@ -3,7 +3,7 @@ class FloodCapybara
     @steps = ""
   end
 
-  def run(token, params = {})
+  def run(params = {})
     specs = JSON.parse(`bundle exec rspec --dry-run -fj spec`)
     specs = specs['examples'].collect {|spec| spec['file_path']}
 
@@ -12,7 +12,7 @@ class FloodCapybara
       iterate ast
     end
 
-    flood token, params
+    flood params
   end
 
   private
@@ -32,8 +32,7 @@ class FloodCapybara
     end
   end
 
-  def flood(token, params={})
-    require 'pry'
+  def flood(params={})
     RestClient.proxy = params[:proxy] if params[:proxy]
     begin
       file = Tempfile.new(['capybara_rspec', '.rb'])
@@ -49,26 +48,26 @@ class FloodCapybara
         params.delete(:files)
       end
 
-      response = RestClient.post "#{params[:endpoint] ? params[:endpoint] : 'https://api.flood.io'}/floods?auth_token=#{token}",
+      response = RestClient.post "#{params[:endpoint] ? params[:endpoint] : 'https://api.flood.io'}/floods?auth_token=#{api_token}",
       {
-        :flood => {
-          :tool => 'capybara-rspec',
-          :url => params[:url],
-          :name => params[:name],
-          :notes => params[:notes],
-          :tag_list => params[:tag_list],
-          :threads => params[:threads],
-          :rampup => params[:rampup],
-          :duration => params[:duration],
-          :override_hosts => params[:override_hosts],
-          :override_parameters => params[:override_parameters],
-          :started => params[:started],
-          :stopped => params[:stopped]
+        flood: {
+          tool: 'capybara-rspec',
+          url: params[:url],
+          name: params[:name],
+          notes: params[:notes],
+          tag_list: params[:tag_list],
+          threads: params[:threads],
+          rampup: params[:rampup],
+          duration: params[:duration],
+          override_hosts: params[:override_hosts],
+          override_parameters: params[:override_parameters],
+          started: params[:started],
+          stopped: params[:stopped]
         },
-        :flood_files => flood_files,
-        :region => params[:region],
-        :multipart => true,
-        :content_type => 'application/octet-stream'
+        flood_files: flood_files,
+        region: params[:region],
+        multipart: true,
+        content_type: 'application/octet-stream'
       }.merge(params)
 
       if response.code == 200

@@ -4,11 +4,16 @@ class FloodCapybara
   module Cli
     class Application < Thor
 
-      desc 'spec API_TOKEN', 'run specs on Flood IO'
+      desc 'spec', 'run specs on Flood IO'
+      option :api_token
       option :grid_id
-      def spec(api_token)
+      option :rampup
+      option :duration
+      option :name
+      option :url
+      def spec
         specs = FloodCapybara.new
-        specs.run api_token, options
+        specs.run options
       end
     end
   end
