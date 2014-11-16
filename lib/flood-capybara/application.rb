@@ -48,7 +48,7 @@ class FloodCapybara
         params.delete(:files)
       end
 
-      response = RestClient.post "#{params[:endpoint] ? params[:endpoint] : 'https://api.flood.io'}/floods?auth_token=#{api_token}",
+      response = RestClient.post "#{params[:endpoint] ? params[:endpoint] : 'https://api.flood.io'}/floods?auth_token=#{params[:api_token]}",
       {
         flood: {
           tool: 'capybara-rspec',
