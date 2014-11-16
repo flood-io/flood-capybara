@@ -1,6 +1,6 @@
 # Flood::Capybara
 
-![](http://i.imgur.com/4nAHS.gif)
+![http://www.bay12forums.com/smf/index.php?action=profile;u=22552](http://i.imgur.com/4nAHS.gif)
 
 This gem lets you run your Capybara acceptance tests on Flood IO. At the moment it supports the RSpec 3 runner only. Plans to include other test runners in the near future.
 
