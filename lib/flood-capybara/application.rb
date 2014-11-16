@@ -5,7 +5,7 @@ class FloodCapybara
 
   def run(params = {})
     specs = JSON.parse(`bundle exec rspec --dry-run -fj spec`)
-    puts "Found the following specs:\n" +
+    logger.warn "Found the following specs:\n" +
       specs['examples'].collect {|spec| spec['description']}.join("\n")
     specs = specs['examples'].collect {|spec| spec['file_path']}
 
