@@ -26,7 +26,14 @@ Or install it yourself as:
 
 In your app / rails directory:
 
-    $ flood-capybara spec --api_token=$FLOOD_API_TOKEN --grid=1QNtoBftrokSErYJdTHRQg --duration=120 --url=https://flood.io
+```
+$ flood-capybara spec \
+  --api_token=$FLOOD_API_TOKEN \
+  --grid=1QNtoBftrokSErYJdTHRQg \
+  --rampup=60 \
+  --duration=120 \
+  --url=https://flood.io
+```
 
 Options available:
 
