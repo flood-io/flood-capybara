@@ -2,9 +2,7 @@
 
 ![http://www.bay12forums.com/smf/index.php?action=profile;u=22552](http://i.imgur.com/4nAHS.gif)
 
-This gem lets you run your Capybara acceptance tests on Flood IO. At the moment it supports the RSpec 3 runner only. Plans to include other test runners in the near future.
-
-This works by essetinally parsing specs from your specs directory, wrapping them up and running them on Flood IO with a specialised docker container (using phantomjs / poltergeist)
+This gem lets you run your Capybara acceptance tests on Flood IO using RSpec 3.
 
 ## Installation
 
@@ -33,6 +31,22 @@ $ flood-capybara spec \
   --rampup=60 \
   --duration=120 \
   --url=https://flood.io
+```
+
+or as a rake task e.g. `lib/tasks/flood.rake`
+
+```
+namespace :flood do
+  task run: :environment do
+    system %{
+      flood-capybara spec
+      --api_token=#{ENV['FLOOD_API_TOKEN']}
+      --rampup=#{ENV['RAMPUP'] || 60}
+      --duration=#{ENV['DURATION'] || 300}
+      --url=#{ENV['URL'] || 'https://flood-newrelic-ruby-kata.herokuapp.com/'}
+    }.squish
+  end
+end
 ```
 
 Options available:
