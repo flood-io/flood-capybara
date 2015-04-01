@@ -4,6 +4,16 @@ require 'pry'
 
 ENV['PUBLIC_IPV4'] ||= `curl -s --fail --connect-timeout 1 http://169.254.169.254/latest/meta-data/public-ipv4 || curl -s --connect-timeout 10 ifconfig.me || echo 127.0.0.1`.chomp
 
+def uri(url)
+  if url && !url.empty?
+    URI.parse(url).scheme.nil? ? URI.parse("http://#{url}") : URI.parse(url)
+  end
+end
+
+def parse_path(url)
+  uri(url).path if url && !url.empty?
+end
+
 describe "sign in", type: :feature do
   before :each do
     page.driver.clear_network_traffic if Capybara.default_driver == :poltergeist
@@ -14,10 +24,14 @@ describe "sign in", type: :feature do
       page.driver.network_traffic.each do |request|
         next unless request
         next unless request.response_parts && request.response_parts.any? && request.response_parts.last
+        # binding.pry if request.url =~ /stats/
+        skip = true if request.response_parts.last.content_type =~ /font|image|css|javascript/
+        skip = false if request.headers.to_s =~ /XMLHttpRequest/
+        next if skip
         @client.index index: "results-#{Time.now.utc.strftime("%Y.%m.%d")}", type: 'capybara', body: {
           timestamp: (Time.now.utc.to_f * 1000).to_i.to_s,
           url: request.url,
-          label:  CGI::escape(request.url),
+          label:  CGI::escape(parse_path(request.url)),
           request_headers: request.headers.map {|header| header['name'] << '=' << header['value'] }.join(';'),
           response_headers: request.response_parts.last.headers.map {|header| header['name'] << '=' << header['value'] }.join(';'),
           start_time: (request.time.to_f * 1000).to_i.to_s,
@@ -39,15 +53,8 @@ describe "sign in", type: :feature do
       end
   end
 
-  it "should just work" do
-    visit '/'
-    expect(page).to have_content 'Flood'
-  end
-end
-
-describe "navigate", type: :feature do
   it "should visit homepage" do
-    visit '/'
+    visit '/wmeS3yIYPs0vM9tFdNQqoQ?grid_id=1'
     expect(page).to have_content 'Flood'
   end
 

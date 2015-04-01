@@ -6,13 +6,12 @@ require 'capybara/poltergeist'
 require 'elasticsearch'
 
 Capybara.default_driver = :poltergeist
-Capybara.save_and_open_page_path = File.dirname(__FILE__) + '/var/log/flood/custom'
 Capybara.app_host = ENV['APP_HOST'] || "http://127.0.0.1"
 Capybara.default_wait_time = 5
 
 RSpec.configure do |config|
   config.before(:all) do
-    @client = Elasticsearch::Client.new log: false
+    @client = Elasticsearch::Client.new host: `boot2docker ip`.chomp, log: false
   end
   config.after(:all) do
   end
