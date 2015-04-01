@@ -11,10 +11,11 @@ class FloodCapybara
     reporter.register_listener(formatter, *notifications)
 
     RSpec::Core::Runner.run(['spec', '--dry-run'])
-    specs =  formatter.output_hash
 
-    logger.warn "Found the following specs:\n" +
-      specs[:examples].try(:map, &:description).join("\n")
+    specs = formatter.output_hash
+
+    logger.info "Flood specs: \n" +
+      specs[:examples].collect {|spec| spec[:description]}.to_yaml
 
     specs = specs[:examples].collect {|spec| spec[:file_path]}
 
@@ -33,7 +34,7 @@ class FloodCapybara
   end
 
   def formatter
-    @_formatter ||= RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
+    @_formatter ||= RSpec::Core::Formatters::JsonFormatter.new(File.open(File::NULL, 'w'))
   end
 
   def reporter
@@ -45,7 +46,9 @@ class FloodCapybara
   end
 
   def notifications
-    @_notifications ||= loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
+    @_notifications ||= loader.send(
+      :notifications_for,
+      RSpec::Core::Formatters::JsonFormatter)
   end
 
   def iterate(node)
@@ -63,22 +66,23 @@ class FloodCapybara
   end
 
   def flood(args = {})
-    begin
-      RestClient.proxy = args[:proxy] if args[:proxy]
+    RestClient.proxy = args[:proxy] if args[:proxy]
 
-      response = RestClient.post endpoint(args), flood_params(args)
+    response = RestClient.post endpoint(args), flood_params(args)
 
-      if response.code == 201
-        logger.info "Flood results at: #{JSON.parse(response)["permalink"]}"
-      else
-        logger.fatal "Sorry there was an error: #{JSON.parse(response)["error"]}"
-      end
+    if response.code == 201
+      logger.info "Flood results: #{JSON.parse(response)["permalink"]}"
+    else
+      logger.fatal "Sorry there was an error: #{JSON.parse(response)["error"]}"
+    end
+
     rescue => e
       logger.fatal "Sorry there was an error: #{JSON.parse(e.response)["error"]}"
   end
 
   def endpoint(args)
-    "#{args[:endpoint] ? args[:endpoint] : 'https://api.flood.io'}/floods?auth_token=#{args[:api_token]}"
+    "#{args[:endpoint] ? args[:endpoint] : 'https://api.flood.io'}/" +
+      "floods?auth_token=#{args[:api_token]}"
   end
 
   def flood_params(args)
@@ -111,9 +115,10 @@ class FloodCapybara
   end
 
   def file
-    Tempfile.new(['capybara_rspec', '.rb']).
-      write(@steps.join("\n")).
-      rewind
+    temp = Tempfile.new(['capybara_rspec', '.rb'])
+    temp.write(@steps.join("\n"))
+    temp.rewind
+    temp
   end
 
   def logger
