@@ -99,13 +99,24 @@ class FloodCapybara
         override_hosts: args[:override_hosts],
         override_parameters: args[:override_parameters],
         started: args[:started],
-        stopped: args[:stopped]
+        stopped: args[:stopped],
+        meta: git_info
       },
       flood_files: flood_files,
       region: args[:region],
       multipart: true,
       content_type: 'application/octet-stream'
     }.merge(args)
+  end
+
+  def git_info
+    {
+      sha: `git rev-parse HEAD`.chomp,
+      repository: {
+        full_name: `git rev-parse --abbrev-ref HEAD`.chomp,
+        url: `git config --get remote.origin.url`.chomp
+      }
+    }
   end
 
   def flood_files
