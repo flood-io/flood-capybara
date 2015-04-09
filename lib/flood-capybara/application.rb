@@ -10,7 +10,9 @@ class FloodCapybara
     config.instance_variable_set(:@reporter, reporter)
     reporter.register_listener(formatter, *notifications)
 
-    RSpec::Core::Runner.run(['spec', '--dry-run'])
+    tags = ['--tag', args[:tag]] if args[:tag]
+
+    RSpec::Core::Runner.run(['spec', '--dry-run'] + tags)
 
     specs = formatter.output_hash
 
@@ -59,6 +61,10 @@ class FloodCapybara
         if (child.to_a.first.children & [:it]).present?
           @steps << Unparser.unparse(child)
         end
+
+        if (child.to_a.first.children & [:scenario]).present?
+          @steps << Unparser.unparse(child)
+        end
       rescue
       end
       iterate(child) if child.is_a?(AST::Node)
@@ -100,7 +106,7 @@ class FloodCapybara
         override_parameters: args[:override_parameters],
         started: args[:started],
         stopped: args[:stopped],
-        meta: git_info
+        meta: git_info.to_json
       },
       flood_files: flood_files,
       region: args[:region],

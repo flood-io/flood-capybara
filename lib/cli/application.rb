@@ -11,6 +11,7 @@ class FloodCapybara
       option :duration
       option :name
       option :url
+      option :tag
       option :endpoint
       def spec
         specs = FloodCapybara.new
