@@ -1,3 +1,7 @@
+# Note that this is Deprecated
+
+This code is for historical purposes only: It is no longer supported by flood.io. Instead, please consider using our [Ruby JMeter](https://github.com/flood-io/ruby-jmeter) library.
+
 # Flood::Capybara
 
 ![http://www.bay12forums.com/smf/index.php?action=profile;u=22552](http://i.imgur.com/4nAHS.gif)
